@@ -369,3 +369,272 @@ function calculateHighestPossible(currentGpa, creditsCompleted, creditsRemaining
   
   return roundTo2((currentPoints + maxFuturePoints) / totalCredits);
 }
+
+// ============================================================================
+// Display
+// ============================================================================
+
+// Builds the entire checklist form dynamically from data.
+// Parameters: None
+// Returns: None
+// Example:
+//   buildChecklist()
+function buildChecklist() {
+  const checklistDiv = document.getElementById("checklist");
+  
+  for (let i = 0; i < CATEGORIES.length; i = i + 1) {
+    const category = CATEGORIES[i];
+    const fieldset = document.createElement("fieldset");
+    const legend = document.createElement("legend");
+    legend.textContent = category;
+    fieldset.appendChild(legend);
+    
+    for (let j = 0; j < COURSES.length; j = j + 1) {
+      if (COURSES[j].category === category) {
+        const course = COURSES[j];
+        
+        const formGroup = document.createElement("div");
+        formGroup.className = "form-group";
+        
+        const label = document.createElement("label");
+        label.setAttribute("for", "grade" + j);
+        
+        let labelText = course.name;
+        if (course.credits === 0.5) {
+          labelText = labelText + " (0.5)";
+        }
+        labelText = labelText + " (min. " + course.minGrade + ")";
+        label.textContent = labelText;
+        
+        const select = document.createElement("select");
+        select.id = "grade" + j;
+        
+        const defaultOption = document.createElement("option");
+        defaultOption.value = "";
+        defaultOption.textContent = "Not taken yet";
+        select.appendChild(defaultOption);
+        
+        if (course.name === "Ashesi Success Seminar") {
+          const pOption = document.createElement("option");
+          pOption.value = "P";
+          pOption.textContent = "P";
+          select.appendChild(pOption);
+        } else {
+          for (let k = 0; k < GRADE_SCALE.length; k = k + 1) {
+            const gradeOption = document.createElement("option");
+            gradeOption.value = GRADE_SCALE[k].letter;
+            gradeOption.textContent = GRADE_SCALE[k].letter;
+            select.appendChild(gradeOption);
+          }
+        }
+        
+        formGroup.appendChild(label);
+        formGroup.appendChild(select);
+        fieldset.appendChild(formGroup);
+      }
+    }
+    
+    checklistDiv.appendChild(fieldset);
+  }
+}
+
+// Validates input, calculates degree progress, and displays it.
+// Parameters: None
+// Returns: None
+// Example:
+//   showAuditResults()
+function showAuditResults() {
+  const resultsDiv = document.getElementById("auditResults");
+  resultsDiv.innerHTML = "";
+  
+  const semestersInput = document.getElementById("semestersCompleted").value;
+  const semestersCompleted = parseInt(semestersInput, 10);
+  
+  if (isNaN(semestersCompleted) || semestersCompleted < 0 || semestersCompleted > 8 || semestersInput !== semestersCompleted.toString()) {
+    const errorP = document.createElement("p");
+    errorP.className = "error-msg";
+    errorP.textContent = "Please enter a valid whole number of semesters completed (0 to 8).";
+    resultsDiv.appendChild(errorP);
+    return;
+  }
+  
+  const totalCredits = getTotalCredits();
+  const completedCredits = getCreditsCompleted();
+  const creditsLeft = totalCredits - completedCredits;
+  const currentCgpa = calculateCurrentCgpa();
+  
+  const summaryP = document.createElement("p");
+  summaryP.innerHTML = "You have completed " + completedCredits + " of " + totalCredits + " credits. <strong>" + creditsLeft + " credits left.</strong><br>Your current CGPA is <strong>" + currentCgpa.toFixed(2) + "</strong>.";
+  resultsDiv.appendChild(summaryP);
+  
+  const semestersLeft = TOTAL_SEMESTERS - semestersCompleted;
+  const adviceP = document.createElement("p");
+  
+  if (creditsLeft === 0) {
+    adviceP.textContent = "You have completed all your courses. You can graduate.";
+  } else if (semestersLeft === 0 && creditsLeft > 0) {
+    const needed = getSemestersNeeded(creditsLeft);
+    adviceP.textContent = "You cannot graduate yet. You still need " + creditsLeft + " credits, which takes at least " + needed + " more semester(s).";
+  } else if ((creditsLeft / semestersLeft) <= MAX_CREDITS_PER_SEMESTER) {
+    adviceP.textContent = "You are on track to graduate.";
+    const plan = buildSemesterPlan(creditsLeft, semestersLeft);
+    const planList = document.createElement("ul");
+    for (let i = 0; i < plan.length; i = i + 1) {
+      if (plan[i] > 0) {
+        const li = document.createElement("li");
+        li.textContent = "Semester " + (semestersCompleted + i + 1) + ": " + plan[i] + " credits";
+        planList.appendChild(li);
+      }
+    }
+    adviceP.appendChild(planList);
+  } else {
+    const neededSemesters = getSemestersNeeded(creditsLeft);
+    const extraSemesters = neededSemesters - semestersLeft;
+    adviceP.textContent = "You cannot graduate on time. You have " + creditsLeft + " credits left but only " + semestersLeft + " semester(s), and the maximum is 4.5 credits per semester. You need about " + neededSemesters + " semesters, which is " + extraSemesters + " extra semester(s).";
+  }
+  resultsDiv.appendChild(adviceP);
+  
+  const table = document.createElement("table");
+  let tableHTML = "<caption>Category Progress</caption><thead><tr><th>Category</th><th>Completed</th><th>Required</th></tr></thead><tbody>";
+  for (let i = 0; i < CATEGORIES.length; i = i + 1) {
+    const cat = CATEGORIES[i];
+    const catCompleted = getCategoryCompleted(cat);
+    const catRequired = getCategoryRequired(cat);
+    tableHTML = tableHTML + "<tr><td>" + cat + "</td><td>" + catCompleted + "</td><td>" + catRequired + "</td></tr>";
+  }
+  tableHTML = tableHTML + "</tbody>";
+  table.innerHTML = tableHTML;
+  resultsDiv.appendChild(table);
+  
+  const retakeDiv = document.createElement("div");
+  retakeDiv.innerHTML = "<h3>Courses to retake</h3>";
+  const retakeUl = document.createElement("ul");
+  let hasRetakes = false;
+  
+  for (let i = 0; i < COURSES.length; i = i + 1) {
+    if (mustRetake(i)) {
+      hasRetakes = true;
+      const li = document.createElement("li");
+      li.textContent = COURSES[i].name + " (Got: " + getSelectedGrade(i) + ", Min: " + COURSES[i].minGrade + ")";
+      retakeUl.appendChild(li);
+    }
+  }
+  if (hasRetakes === false) {
+    const li = document.createElement("li");
+    li.textContent = "None";
+    retakeUl.appendChild(li);
+  }
+  retakeDiv.appendChild(retakeUl);
+  resultsDiv.appendChild(retakeDiv);
+  
+  const stillToTakeDiv = document.createElement("div");
+  stillToTakeDiv.innerHTML = "<h3>Courses still to take</h3>";
+  const stillToTakeUl = document.createElement("ul");
+  let hasStillToTake = false;
+  
+  for (let i = 0; i < COURSES.length; i = i + 1) {
+    if (hasPassed(i) === false && mustRetake(i) === false) {
+      hasStillToTake = true;
+      const li = document.createElement("li");
+      li.textContent = COURSES[i].name + " (" + COURSES[i].credits + " credits)";
+      stillToTakeUl.appendChild(li);
+    }
+  }
+  if (hasStillToTake === false) {
+    const li = document.createElement("li");
+    li.textContent = "None";
+    stillToTakeUl.appendChild(li);
+  }
+  stillToTakeDiv.appendChild(stillToTakeUl);
+  resultsDiv.appendChild(stillToTakeDiv);
+}
+
+// Clears all form inputs and result areas.
+// Parameters: None
+// Returns: None
+// Example:
+//   clearAll()
+function clearAll() {
+  for (let i = 0; i < COURSES.length; i = i + 1) {
+    const select = document.getElementById("grade" + i);
+    if (select) {
+      select.value = "";
+    }
+  }
+  document.getElementById("semestersCompleted").value = "";
+  document.getElementById("targetGpa").value = "";
+  document.getElementById("auditResults").innerHTML = "";
+  document.getElementById("gpaResults").innerHTML = "";
+}
+
+// Calculates the required average to hit a target CGPA and displays it.
+// Parameters: None
+// Returns: None
+// Example:
+//   showGpaResults()
+function showGpaResults() {
+  const gpaResultsDiv = document.getElementById("gpaResults");
+  gpaResultsDiv.innerHTML = "";
+  
+  const targetInput = document.getElementById("targetGpa").value;
+  const targetGpa = parseFloat(targetInput);
+  
+  if (isNaN(targetGpa) || targetGpa < 0 || targetGpa > 4 || targetInput === "") {
+    const errorP = document.createElement("p");
+    errorP.className = "error-msg";
+    errorP.textContent = "Please enter a valid Target CGPA between 0 and 4.";
+    gpaResultsDiv.appendChild(errorP);
+    return;
+  }
+  
+  let hasLetterGrades = false;
+  for (let i = 0; i < COURSES.length; i = i + 1) {
+    const grade = getSelectedGrade(i);
+    if (grade !== "" && grade !== "P") {
+      hasLetterGrades = true;
+      break;
+    }
+  }
+  
+  if (hasLetterGrades === false) {
+    const p = document.createElement("p");
+    p.textContent = "Please fill in some letter grades in Section 1 first to establish a current CGPA.";
+    gpaResultsDiv.appendChild(p);
+    return;
+  }
+  
+  const currentCgpa = calculateCurrentCgpa();
+  const completedCredits = getCreditsCompleted();
+  const totalCredits = getTotalCredits();
+  const creditsLeft = totalCredits - completedCredits;
+  
+  if (creditsLeft === 0) {
+    const p = document.createElement("p");
+    p.textContent = "You have 0 credits left. Your CGPA can no longer change.";
+    gpaResultsDiv.appendChild(p);
+    return;
+  }
+  
+  const requiredAverage = calculateRequiredAverage(currentCgpa, completedCredits, creditsLeft, targetGpa);
+  
+  const resultP = document.createElement("p");
+  resultP.textContent = "To reach a " + targetGpa.toFixed(2) + " CGPA, you need an average of " + requiredAverage.toFixed(2) + " on your remaining " + creditsLeft + " credits.";
+  gpaResultsDiv.appendChild(resultP);
+  
+  const verdictP = document.createElement("p");
+  if (requiredAverage > MAX_POINTS) {
+    const highestPossible = calculateHighestPossible(currentCgpa, completedCredits, creditsLeft);
+    verdictP.textContent = "This target is not achievable. The highest CGPA you can still reach is " + highestPossible.toFixed(2) + ".";
+  } else if (requiredAverage <= MIN_POINTS) {
+    verdictP.textContent = "Your target is already secured!";
+  } else {
+    verdictP.textContent = "Your target is achievable!";
+  }
+  gpaResultsDiv.appendChild(verdictP);
+}
+
+// Start-up
+buildChecklist();
+document.getElementById("auditBtn").addEventListener("click", showAuditResults);
+document.getElementById("clearBtn").addEventListener("click", clearAll);
+document.getElementById("gpaBtn").addEventListener("click", showGpaResults);
