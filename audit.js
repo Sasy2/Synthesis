@@ -29,17 +29,17 @@ const GRADE_SCALE = [
 const COURSES = [
   // Humanities & Social Sciences
   { name: "Written and Oral Communication", credits: 1, minGrade: "C", category: "Humanities & Social Sciences" },
-  { name: "Text and Meaning", credits: 1, minGrade: "B+", category: "Humanities & Social Sciences" },
-  { name: "Leadership 1", credits: 0.5, minGrade: "B", category: "Humanities & Social Sciences" },
+  { name: "Text and Meaning", credits: 1, minGrade: "C", category: "Humanities & Social Sciences" },
+  { name: "Leadership 1", credits: 0.5, minGrade: "C", category: "Humanities & Social Sciences" },
   { name: "Leadership 2", credits: 0.5, minGrade: "D+", category: "Humanities & Social Sciences" },
-  { name: "Leadership 3", credits: 0.5, minGrade: "B", category: "Humanities & Social Sciences" },
-  { name: "Leadership 4", credits: 1, minGrade: "C+", category: "Humanities & Social Sciences" },
+  { name: "Leadership 3", credits: 0.5, minGrade: "C", category: "Humanities & Social Sciences" },
+  { name: "Leadership 4", credits: 1, minGrade: "C", category: "Humanities & Social Sciences" },
   { name: "Principles of Economics", credits: 1, minGrade: "C", category: "Humanities & Social Sciences" },
   { name: "Ashesi Success Seminar", credits: 0, minGrade: "P", category: "Humanities & Social Sciences" },
   
   // Business
-  { name: "Foundations of Design & Entrepreneurship I", credits: 1, minGrade: "B", category: "Business" },
-  { name: "Foundations of Design & Entrepreneurship II", credits: 1, minGrade: "C+", category: "Business" },
+  { name: "Foundations of Design & Entrepreneurship I", credits: 1, minGrade: "C", category: "Business" },
+  { name: "Foundations of Design & Entrepreneurship II", credits: 1, minGrade: "C", category: "Business" },
   { name: "Finance for Non-Finance Managers", credits: 1, minGrade: "D+", category: "Business" },
   
   // Mathematics & Quantitative
@@ -49,10 +49,10 @@ const COURSES = [
   { name: "Linear Algebra", credits: 1, minGrade: "C", category: "Mathematics & Quantitative" },
   
   // Computing
-  { name: "Introduction to Computing & IS", credits: 1, minGrade: "B+", category: "Computing" },
+  { name: "Introduction to Computing & IS", credits: 1, minGrade: "C", category: "Computing" },
   
   // Research
-  { name: "Research Methods", credits: 1, minGrade: "C+", category: "Research" },
+  { name: "Research Methods", credits: 1, minGrade: "C", category: "Research" },
   
   // Non-Major Electives
   { name: "Non-Major Elective 1", credits: 1, minGrade: "C", category: "Non-Major Electives" },
@@ -64,24 +64,24 @@ const COURSES = [
   { name: "Discrete Structures and Theory", credits: 1, minGrade: "D+", category: "Required Major Courses" },
   { name: "Data Structures and Algorithms", credits: 1, minGrade: "C", category: "Required Major Courses" },
   { name: "Computer Organization & Architecture", credits: 1, minGrade: "D+", category: "Required Major Courses" },
-  { name: "Introduction to AI", credits: 1, minGrade: "C+", category: "Required Major Courses" },
+  { name: "Introduction to AI", credits: 1, minGrade: "C", category: "Required Major Courses" },
   { name: "Software Engineering", credits: 1, minGrade: "C", category: "Required Major Courses" },
   { name: "Database Systems", credits: 1, minGrade: "C", category: "Required Major Courses" },
-  { name: "Intermediate Computer Programming", credits: 1, minGrade: "B", category: "Required Major Courses" },
+  { name: "Intermediate Computer Programming", credits: 1, minGrade: "C", category: "Required Major Courses" },
   { name: "Web Technologies", credits: 1, minGrade: "D+", category: "Required Major Courses" },
   { name: "Networks & Data Communication", credits: 1, minGrade: "D", category: "Required Major Courses" },
   { name: "Operating Systems", credits: 1, minGrade: "C", category: "Required Major Courses" },
   { name: "Algorithm Design & Analysis", credits: 1, minGrade: "D", category: "Required Major Courses" },
-  { name: "Introduction to Modelling & Simulation", credits: 0.5, minGrade: "C+", category: "Required Major Courses" },
+  { name: "Introduction to Modelling & Simulation", credits: 0.5, minGrade: "C", category: "Required Major Courses" },
   { name: "System Fundamentals", credits: 1, minGrade: "D", category: "Required Major Courses" },
   
   // Major Electives
-  { name: "CS Elective 1", credits: 1, minGrade: "C+", category: "Major Electives" },
-  { name: "CS Elective 2", credits: 1, minGrade: "C+", category: "Major Electives" },
+  { name: "CS Elective 1", credits: 1, minGrade: "C", category: "Major Electives" },
+  { name: "CS Elective 2", credits: 1, minGrade: "C", category: "Major Electives" },
   
   // Capstone
   { name: "Capstone 1", credits: 1, minGrade: "D+", category: "Capstone" },
-  { name: "Capstone 2", credits: 1, minGrade: "C+", category: "Capstone" }
+  { name: "Capstone 2", credits: 1, minGrade: "C", category: "Capstone" }
 ];
 
 const TOTAL_SEMESTERS = 8;
