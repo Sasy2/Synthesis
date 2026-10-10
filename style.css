@@ -139,7 +139,7 @@ label {
   font-weight: bold;
 }
 
-input {
+input, select {
   padding: 0.5rem;
   font-size: 1rem;
   border: 1px solid #222222;
@@ -151,20 +151,28 @@ input {
   margin-bottom: 1.5rem;
 }
 
-.assumptions {
-  font-size: 0.9rem;
+/* Checklist Layout */
+#checklist {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
 }
 
-#errors {
-  color: #8a1c2b;
-  font-weight: bold;
+/* Results Formatting */
+.results {
+  margin-top: 1.5rem;
 }
 
-#requiredAverage, #letterGrade, #verdict {
+.results p, .results ul {
   background-color: #f4f4f4;
   padding: 1rem;
   margin-bottom: 1rem;
   border-left: 4px solid #8a1c2b;
+}
+
+.error-msg {
+  color: #8a1c2b;
+  font-weight: bold;
 }
 
 footer {
@@ -173,12 +181,6 @@ footer {
   background-color: #f4f4f4;
   margin-top: 2rem;
   border-top: 1px solid #222222;
-}
-
-.calculator-layout {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
 }
 
 @media (min-width: 48rem) {
@@ -201,9 +203,10 @@ footer {
     display: inline-block;
   }
   
-  .calculator-layout {
+  #checklist {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 2rem;
+    gap: 1.5rem;
+    align-items: start;
   }
 }
