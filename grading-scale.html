@@ -3,22 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width">
-  <title>GPA Goal Calculator | Grading Scale</title>
+  <title>Ashesi Degree Audit | Grading Scale</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <header>
-    <p class="site-name">GPA Goal Calculator</p>
+    <p class="site-name">Ashesi Degree Audit</p>
     <nav>
       <ul>
         <li><a href="index.html">Home</a></li>
-        <li><a href="calculator.html">Calculator</a></li>
+        <li><a href="audit.html">Degree Audit</a></li>
         <li><a href="grading-scale.html" class="active">Grading Scale</a></li>
       </ul>
     </nav>
   </header>
   <main>
-    <h1>The Ashesi grading scale</h1>
+    <h1>Grading scale and rules</h1>
     <table>
       <caption>Undergraduate Grading System</caption>
       <thead>
@@ -42,22 +42,31 @@
     </table>
 
     <section>
+      <h2>Minimum grades</h2>
+      <p>Every course has a minimum passing grade. A course only counts towards graduation if the grade is at or above that minimum; otherwise, it must be retaken.</p>
+    </section>
+
+    <section>
+      <h2>Credit load</h2>
+      <p>A normal degree has 8 semesters, and a student can take a maximum of about 4.5 credits per semester.</p>
+    </section>
+
+    <section>
       <h2>How CGPA is calculated</h2>
-      <p>Cumulative Grade Point Average (CGPA) is a credit-weighted average. This means your grade points are multiplied by the credits for each course, added up, and then divided by the total number of credits you have taken. Note that Ashesi courses typically carry 1 or 0.5 credits.</p>
+      <p>Cumulative Grade Point Average (CGPA) is a credit-weighted average. This means your grade points are multiplied by the credits for each course, added up, and then divided by the total number of credits you have taken. "P" (pass) grades do not count in the CGPA calculation.</p>
       
-      <h3>Worked example of the calculator's method</h3>
-      <p>Suppose your current CGPA is 3.0, with 20 credits completed. You have 15 credits remaining, and your target is a 3.3 CGPA:</p>
-      <ul>
-        <li>points so far = 3.0 x 20 = 60</li>
-        <li>total credits = 35</li>
-        <li>points needed = 3.3 x 35 = 115.5</li>
-        <li>points still needed = 115.5 - 60 = 55.5</li>
-        <li>required average = 55.5 / 15 = 3.70</li>
-      </ul>
+      <h3>Worked example of target calculation</h3>
+      <p>Suppose your current CGPA is 3.0 after 20 credits, with 15 credits left, and a target CGPA of 3.3:</p>
+      <p>(3.3 x 35 - 3.0 x 20) / 15 = 3.70</p>
+    </section>
+
+    <section>
+      <h2>Assumptions</h2>
+      <p>This audit assumes a Computer Science degree on the standard Calculus track. Electives are treated as general slots. Summer semesters and repeated-course rules are not handled. Always confirm with your academic advisor.</p>
     </section>
   </main>
   <footer>
-    <p>GPA Goal Calculator, a WebTech mini-project based on the Ashesi grading scale.</p>
+    <p>Ashesi Degree Audit, a WebTech mini-project by Agatha Suzie Youyou.</p>
   </footer>
 </body>
 </html>
