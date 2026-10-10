@@ -159,3 +159,233 @@ function findCombinations(creditsRemaining, requiredAverage) {
   
   return combinations;
 }
+
+// ============================================================================
+// 7.4 Validation
+// ============================================================================
+
+// Validates the four user inputs according to business rules.
+// Parameters:
+//   currentGpa (number): The CGPA achieved so far.
+//   creditsCompleted (number): Total credits completed so far.
+//   creditsRemaining (number): Total credits left to take.
+//   targetGpa (number): The CGPA the student wants to reach.
+// Returns:
+//   (array): An array of error message strings. Empty if all inputs are valid.
+// Example:
+//   validateInputs(3.0, 20, 15, 4.5) returns ["Target CGPA must be between 0 and 4."]
+function validateInputs(currentGpa, creditsCompleted, creditsRemaining, targetGpa) {
+  const errors = [];
+
+  // Check if any input is missing or invalid
+  if (isNaN(currentGpa) || isNaN(creditsCompleted) || isNaN(creditsRemaining) || isNaN(targetGpa)) {
+    errors.push("Please enter a valid number in all fields.");
+  } else {
+    if (currentGpa < 0 || currentGpa > 4) {
+      errors.push("Current CGPA must be between 0 and 4.");
+    }
+    if (targetGpa < 0 || targetGpa > 4) {
+      errors.push("Target CGPA must be between 0 and 4.");
+    }
+    if (creditsCompleted < 0 || creditsCompleted > 60) {
+      errors.push("Credits completed must be between 0 and 60.");
+    }
+    if (creditsRemaining < 0.5 || creditsRemaining > 60) {
+      errors.push("Credits remaining must be between 0.5 and 60.");
+    }
+    // Check if credits are multiples of 0.5
+    if ((creditsCompleted * 2) % 1 !== 0 || (creditsRemaining * 2) % 1 !== 0) {
+      errors.push("Credits must be in steps of 0.5.");
+    }
+  }
+
+  return errors;
+}
+
+// ============================================================================
+// 7.5 Display functions
+// ============================================================================
+
+// Empties all result and error areas on the page.
+// Parameters: None
+// Returns: None
+// Example:
+//   clearOutput()
+function clearOutput() {
+  document.getElementById("errors").innerHTML = "";
+  document.getElementById("requiredAverage").textContent = "";
+  document.getElementById("letterGrade").textContent = "";
+  document.getElementById("verdict").textContent = "";
+  document.getElementById("combinations").innerHTML = "";
+}
+
+// Displays validation errors in a bulleted list on the page.
+// Parameters:
+//   errors (array): An array of error message strings.
+// Returns: None
+// Example:
+//   showErrors(["Target CGPA must be between 0 and 4."])
+function showErrors(errors) {
+  const errorsDiv = document.getElementById("errors");
+  const ul = document.createElement("ul");
+  
+  for (let i = 0; i < errors.length; i = i + 1) {
+    const li = document.createElement("li");
+    li.textContent = errors[i];
+    ul.appendChild(li);
+  }
+  
+  errorsDiv.appendChild(ul);
+}
+
+// Fills the results section with the required average, letter grade, and verdict.
+// Parameters:
+//   requiredAverage (number): The average grade point needed.
+//   verdict (string): "notAchievable", "secured", or "achievable".
+//   highestPossible (number): The maximum possible CGPA.
+//   gradeObject (object): The lowest required letter grade object (only for "achievable").
+// Returns: None
+// Example:
+//   showResults(3.70, "achievable", 4.00, { letter: "A or A+", minPercent: 80, points: 4.0 })
+function showResults(requiredAverage, verdict, highestPossible, gradeObject) {
+  const reqAvgP = document.getElementById("requiredAverage");
+  const letterGradeP = document.getElementById("letterGrade");
+  const verdictP = document.getElementById("verdict");
+  
+  reqAvgP.textContent = "You need an average of " + requiredAverage.toFixed(2) + " on your remaining credits.";
+  
+  if (verdict === "achievable") {
+    letterGradeP.textContent = "Minimum required grade: " + gradeObject.letter + " (aim for at least " + gradeObject.minPercent + "%).";
+    verdictP.textContent = "Your target is achievable!";
+  } else if (verdict === "secured") {
+    verdictP.textContent = "Your target is already secured, even with the lowest grades.";
+  } else if (verdict === "notAchievable") {
+    verdictP.textContent = "Your required average is above 4.00, so this target is mathematically impossible. The highest CGPA you can still reach is " + highestPossible.toFixed(2) + ".";
+  }
+}
+
+// Builds a table showing the generated combinations of A, B+, and B grades.
+// Parameters:
+//   combinations (array): An array of combination objects.
+// Returns: None
+// Example:
+//   showCombinations([{ aCredits: 0.5, bPlusCredits: 0, bCredits: 0.5, average: 3.5 }])
+function showCombinations(combinations) {
+  const combinationsDiv = document.getElementById("combinations");
+  
+  if (combinations.length === 0) {
+    return;
+  }
+  
+  const table = document.createElement("table");
+  const caption = document.createElement("caption");
+  caption.textContent = "Grade combinations that reach your target";
+  table.appendChild(caption);
+  
+  const thead = document.createElement("thead");
+  const headerRow = document.createElement("tr");
+  
+  const th1 = document.createElement("th");
+  th1.textContent = "Credits of A";
+  const th2 = document.createElement("th");
+  th2.textContent = "Credits of B+";
+  const th3 = document.createElement("th");
+  th3.textContent = "Credits of B";
+  const th4 = document.createElement("th");
+  th4.textContent = "Average";
+  
+  headerRow.appendChild(th1);
+  headerRow.appendChild(th2);
+  headerRow.appendChild(th3);
+  headerRow.appendChild(th4);
+  thead.appendChild(headerRow);
+  table.appendChild(thead);
+  
+  const tbody = document.createElement("tbody");
+  
+  for (let i = 0; i < combinations.length; i = i + 1) {
+    const combo = combinations[i];
+    const row = document.createElement("tr");
+    
+    const tdA = document.createElement("td");
+    tdA.textContent = combo.aCredits;
+    const tdBPlus = document.createElement("td");
+    tdBPlus.textContent = combo.bPlusCredits;
+    const tdB = document.createElement("td");
+    tdB.textContent = combo.bCredits;
+    const tdAvg = document.createElement("td");
+    tdAvg.textContent = combo.average.toFixed(2);
+    
+    row.appendChild(tdA);
+    row.appendChild(tdBPlus);
+    row.appendChild(tdB);
+    row.appendChild(tdAvg);
+    
+    tbody.appendChild(row);
+  }
+  
+  table.appendChild(tbody);
+  combinationsDiv.appendChild(table);
+}
+
+// ============================================================================
+// 7.6 Main function and event wiring
+// ============================================================================
+
+// Reads inputs, coordinates the calculation logic, and handles the display.
+// Parameters: None
+// Returns: None
+// Example:
+//   handleCalculate()
+function handleCalculate() {
+  clearOutput();
+  
+  const currentGpa = parseFloat(document.getElementById("currentGpa").value);
+  const creditsCompleted = parseFloat(document.getElementById("creditsCompleted").value);
+  const creditsRemaining = parseFloat(document.getElementById("creditsRemaining").value);
+  const targetGpa = parseFloat(document.getElementById("targetGpa").value);
+  
+  const errors = validateInputs(currentGpa, creditsCompleted, creditsRemaining, targetGpa);
+  
+  if (errors.length > 0) {
+    showErrors(errors);
+    return;
+  }
+  
+  try {
+    const requiredAverage = calculateRequiredAverage(currentGpa, creditsCompleted, creditsRemaining, targetGpa);
+    const highestPossible = calculateHighestPossible(currentGpa, creditsCompleted, creditsRemaining);
+    const verdict = getVerdict(requiredAverage);
+    
+    let gradeObject;
+    let combinations = [];
+    
+    if (verdict === "achievable") {
+      gradeObject = findLetterGrade(requiredAverage);
+      combinations = findCombinations(creditsRemaining, requiredAverage);
+    }
+    
+    showResults(requiredAverage, verdict, highestPossible, gradeObject);
+    showCombinations(combinations);
+    
+  } catch (error) {
+    const errorDiv = document.getElementById("errors");
+    errorDiv.textContent = "An unexpected error occurred: " + error;
+  }
+}
+
+// Resets all form inputs and clears the display.
+// Parameters: None
+// Returns: None
+// Example:
+//   handleReset()
+function handleReset() {
+  document.getElementById("currentGpa").value = "";
+  document.getElementById("creditsCompleted").value = "";
+  document.getElementById("creditsRemaining").value = "";
+  document.getElementById("targetGpa").value = "";
+  clearOutput();
+}
+
+document.getElementById("calculateBtn").addEventListener("click", handleCalculate);
+document.getElementById("resetBtn").addEventListener("click", handleReset);
