@@ -71,6 +71,12 @@
 - **Inputs:** Current GPA, completed credits, remaining credits, target GPA.
 - **Outputs:** Number representing required or maximum CGPA.
 
+### `findTargetLetterGrade(requiredAverage)`
+- **What it does:** Works backwards through the `GRADE_SCALE` array to find the lowest letter grade that provides enough points to meet the required average.
+- **Inputs:** `requiredAverage` (number).
+- **Outputs:** Grade object (e.g. `{ letter: "B+", points: 3.5 }`).
+- **Trace Example:** `findTargetLetterGrade(3.20)` -> loops backwards from E/F, finding that `B+` (3.5) is the first grade where points >= 3.20. Returns the `B+` object.
+
 ### `buildChecklist`, `showAuditResults`, `clearAll`, `showGpaResults`
 - **What they do:** DOM manipulation functions. `buildChecklist` dynamically generates the forms using nested loops. `showAuditResults` calculates status and builds output paragraphs and tables. `clearAll` zeroes everything out.
 
