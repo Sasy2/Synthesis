@@ -370,6 +370,24 @@ function calculateHighestPossible(currentGpa, creditsCompleted, creditsRemaining
   return roundTo2((currentPoints + maxFuturePoints) / totalCredits);
 }
 
+// Finds the lowest letter grade that meets or exceeds the required average.
+// Parameters:
+//   requiredAverage (number): The target grade points average.
+// Returns:
+//   (object): The matching grade object from GRADE_SCALE.
+// Example:
+//   findTargetLetterGrade(3.20) returns { letter: "B+", points: 3.5 }
+function findTargetLetterGrade(requiredAverage) {
+  let bestMatch = GRADE_SCALE[0];
+  for (let i = GRADE_SCALE.length - 1; i >= 0; i = i - 1) {
+    if (GRADE_SCALE[i].points >= requiredAverage) {
+      bestMatch = GRADE_SCALE[i];
+      break;
+    }
+  }
+  return bestMatch;
+}
+
 // ============================================================================
 // Display
 // ============================================================================
@@ -628,7 +646,12 @@ function showGpaResults() {
   } else if (requiredAverage <= MIN_POINTS) {
     verdictP.textContent = "Your target is already secured!";
   } else {
-    verdictP.textContent = "Your target is achievable!";
+    const targetGrade = findTargetLetterGrade(requiredAverage);
+    let gradeText = targetGrade.letter;
+    if (targetGrade.letter === "A" || targetGrade.letter === "A+") {
+      gradeText = "A or A+";
+    }
+    verdictP.textContent = "Your target is achievable! To comfortably reach this average, you should aim to get at least a " + gradeText + " in your remaining courses.";
   }
   gpaResultsDiv.appendChild(verdictP);
 }
